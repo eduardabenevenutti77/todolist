@@ -1,4 +1,4 @@
-# Todo List (Com técnicas de segurança)
+# Todo List (Com técnicas de segurança) 👩‍💻🚀
 
 Uma aplicação de gerenciamento de tarefas desenvolvida com **Node.js** no backend, utilizando **Express** e **MySQL**. Aplicando conhecimentos para segurança em aplicações web, testando vulnerabilidades como **SQL Injection** e **ataques XSS**.
 
@@ -30,29 +30,3 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 - [Node.js](https://nodejs.org/)
 - [MySQL](https://www.mysql.com/)
-
-## Configuração do Projeto
-
-Siga os passos abaixo para rodar o projeto localmente:
-
-### 1. Clone o repositório
-
-```bash
-Após clonar o repositório:
-cd todo-list
-```
-
-### 2. Instale as dependências no backend
-
-```bash
-cd backend
-npm install
-```
-
-### 3. Inicie o servidor do backend localmente
-
-```bash
-node app.js
-```
-
-### Burp Suite Tests
