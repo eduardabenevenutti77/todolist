@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev": "node --watch app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Matheus Martins Viana",
+  "author": "Maria",
   "license": "ISC",
   "description": "",
   "dependencies": {

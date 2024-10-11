@@ -301,6 +301,12 @@ li {
   animation: fadein 0.5s ease-in-out;
 }
 
+#displayDev {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #register-form input,
 #login-form input {
   max-width: 300px;
