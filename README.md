@@ -18,6 +18,9 @@ Uma aplicação de gerenciamento de tarefas desenvolvida com **Node.js** no back
 4. Uso de Prepared Statements:
    Para prevenir ataques de SQL Injection, são utilizados prepared statements nas interações com o banco de dados. Com isso, os dados são tratados separadamente das consultas SQL, evitando a execução de comandos maliciosos inseridos por usuários. (Para SQL Injection)
 
+5. Autenticação de 2FA:
+   Para evitar que usuários maliciosos utilizem a aplicação foi desenvolvido a funcionalidade de autentição por dois fatores, neste caso, o usuário para realizar o login necessitará da confirmar de sua legitimidade. Para isto, usamos o envio de um código ao e-mail cadastrado e por meio deste código permitiremos o acesso a aplicação.
+
 ## Tecnologias Usadas
 
 - **Backend:** Node.js, Express, MySQL
