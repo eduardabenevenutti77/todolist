@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <title>Todo List App</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="credits">
-      <h1>Todo List</h1>
-      <div id="displayDev">
-        <p>Criado por <a id="github-link" href="https://github.com/eduardabenevenutti77">@eduardabenevenutti77</a> & <a
-            id="github-link" href="https://github.com/4m4nu4l4">@emanuelepries</a></p>
-      </div>
-    </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+  <title>Todo List App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="credits">
+    <h1>Todo List</h1>
+    <div id="displayDev">
+    <p class="github-link">Criado por <a class="github-link" href="https://github.com/eduardabenevenutti77">@eduardabenevenutti77</a> & <a
+      class="github-link" href="https://github.com/4m4nu4l4">@emanuelepries</a></p>
+  </div>
   </div>
   <div class="container">
     <!-- Login/Register Forms -->
     <div id="auth-container">
       <h1 id="form-title">Login</h1>
 
+      <!-- Formulário de Login -->
       <!-- Formulário de Login -->
       <form id="login-form">
         <input type="text" id="login-username" placeholder="Nome de usuário" required />
@@ -62,7 +63,19 @@
       <ul id="todo-list"></ul>
       <button id="logout">Logout</button>
     </div>
+
     <!-- Todo List Section -->
+    <div id="todo-container" style="display: none">
+      <h2>Suas Tarefas</h2>
+      <ul id="todo-list"></ul>
+
+      <form id="new-todo-form">
+        <input type="text" id="new-todo-title" placeholder="Nova tarefa" required />
+        <button id="add" type="submit">Adicionar Tarefa</button>
+      </form>
+
+      <button id="logout">Sair</button>
+    </div>
   </div>
 
   <!-- Modal -->
@@ -80,5 +93,7 @@
     </div>
   </div>
 
+  <script src="script.js"></script>
 </body>
+
 </html>

@@ -5,8 +5,8 @@
   --secondary-dark: #2989a7;
   --logout-color: #ff6b6b;
   --logout-dark: #ff4d4d;
-  --background-gradient-start: #ffffff;
-  --background-gradient-end: #bbbbbb;
+  --background-gradient-start: #b03d80;
+  --background-gradient-end: #ab50a8;
   --container-background: rgba(255, 255, 255, 0.95);
   --text-color: #333;
   --border-color: #ccc;
@@ -122,10 +122,14 @@ body {
   color: gray;
 }
 
+.github-link {
+  color: white;
+}
+
 h1 {
   font-size: 2rem;
   margin-bottom: 25px;
-  color: var(--primary-color);
+  color: black;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
