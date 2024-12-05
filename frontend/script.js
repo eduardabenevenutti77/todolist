@@ -238,14 +238,44 @@ async function deleteTodo(id) {
 }
 
 document.getElementById("logout").addEventListener("click", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/users/logout", {
+  window.location.href = '/login'
+});
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  clearErrors(); // Limpa os erros anteriores
+
+  const username = document.getElementById("login-username").value;
+  const password = document.getElementById("login-password").value;
+
+  const response = await fetch("http://localhost:3000/api/v1/users/login", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
     credentials: "include",
   });
+
   if (response.ok) {
-    todoContainer.style.display = "none";
-    authContainer.style.display = "block";
+    const authResponse = await fetch("http://localhost:3000/api/v1/users/auth", {
+      credentials: "include",
+    });
+
+    if (authResponse.ok) {
+      const { isTwoFactorEnabled } = await authResponse.json();
+
+      if (isTwoFactorEnabled) {
+        // Se 2FA já estiver habilitado, exibe o formulário para validar o código
+        authContainer.style.display = "none";
+        twoFactorContainer.style.display = "block";
+      } else {
+        // Exibe o QR Code para configurar 2FA
+        showQRCode();
+      }
+    } else {
+      showError("login-username", "Erro de autenticação após login");
+    }
   } else {
-    alert("Erro ao fazer logout");
+    const errorData = await response.json();
+    showError("login-username", errorData.error || "Falha no login");
   }
 });

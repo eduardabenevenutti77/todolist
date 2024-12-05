@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const userQueries = require("../queries/userQueries");
+const speakeasy = require("speakeasy");
+const qrcode = require("qrcode");
 
 // Função para validar o formato de nome de usuário
 const validateUsername = (username) => {
@@ -15,8 +17,39 @@ const validatePassword = (password) => {
   return re.test(password);
 };
 
+// Função para configurar o 2FA
+const setupTwoFactorAuth = async (userId) => {
+  const secret = speakeasy.generateSecret({ length: 20 });
+
+  // Salvar o segredo no banco de dados associado ao usuário (você precisa adicionar isso na sua tabela de usuários)
+  await userQueries.saveUserSecret(userId, secret.base32); // Exemplo, altere conforme seu banco de dados
+
+  return secret;
+};
+
+// Função para verificar o código 2FA
+const verifyTwoFactorAuth = (userId, token) => {
+  return new Promise((resolve, reject) => {
+    userQueries.getUserSecret(userId, (err, secret) => {
+      if (err) return reject(err);
+
+      const verified = speakeasy.totp.verify({
+        secret: secret,
+        encoding: "base32",
+        token: token,
+      });
+
+      if (verified) {
+        resolve(true);
+      } else {
+        reject(new Error("Código de autenticação inválido"));
+      }
+    });
+  });
+};
+
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, token } = req.body;
 
   if (!username || !password) {
     return res
@@ -32,7 +65,6 @@ exports.login = async (req, res) => {
 
   try {
     userQueries.findUserByUsername(username, async (err, results) => {
-      // Alterado para findUserByUsername
       if (err) {
         return res.status(500).json({ error: "Erro ao buscar usuário." });
       }
@@ -47,7 +79,17 @@ exports.login = async (req, res) => {
         return res.status(400).json({ error: "Senha incorreta." });
       }
 
-      const token = jwt.sign(
+      // Verifica se a 2FA está habilitada
+      if (user.twoFactorEnabled) {
+        // Se a 2FA estiver ativada, verifica o token
+        try {
+          await verifyTwoFactorAuth(user.id, token);
+        } catch (error) {
+          return res.status(400).json({ error: "Código de autenticação inválido." });
+        }
+      }
+
+      const tokenJwt = jwt.sign(
         { userId: user.id },
         process.env.JWT_SECRET || "dev",
         {
@@ -55,7 +97,7 @@ exports.login = async (req, res) => {
         }
       );
 
-      res.cookie("token", token, {
+      res.cookie("token", tokenJwt, {
         httpOnly: true,
         maxAge: 3600000,
         secure: true,
@@ -67,11 +109,6 @@ exports.login = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Erro no servidor. Tente novamente." });
   }
-};
-
-exports.logout = (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "Logout realizado com sucesso." });
 };
 
 exports.register = async (req, res) => {
@@ -120,6 +157,35 @@ exports.register = async (req, res) => {
   }
 };
 
+// Rota para configurar a 2FA (QR code)
+exports.setupTwoFactor = async (req, res) => {
+  const userId = req.userId; // Supondo que o userId esteja disponível no token JWT
+
+  try {
+    const secret = await setupTwoFactorAuth(userId);
+    const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url);
+
+    res.status(200).json({
+      message: "2FA configurado com sucesso. Escaneie o QR code.",
+      qrCodeUrl,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao configurar a 2FA." });
+  }
+};
+
+// Rota para desabilitar a 2FA
+exports.disableTwoFactor = (req, res) => {
+  const userId = req.userId; // Supondo que o userId esteja disponível no token JWT
+
+  userQueries.removeUserSecret(userId, (err) => {
+    if (err) {
+      return res.status(500).json({ error: "Erro ao desabilitar a 2FA." });
+    }
+    res.status(200).json({ message: "2FA desabilitada com sucesso." });
+  });
+};
+
 exports.auth = (req, res) => {
   if (!req.userId) {
     return res
@@ -127,4 +193,9 @@ exports.auth = (req, res) => {
       .json({ isAuthenticated: false, message: "Usuário não autenticado" });
   }
   return res.status(200).json({ isAuthenticated: true, userId: req.userId });
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logout realizado com sucesso." });
 };
